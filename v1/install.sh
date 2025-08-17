@@ -1,3 +1,4 @@
+#!/bin/bash
 set -euo pipefail
 
 arch=$(uname -m)
@@ -25,14 +26,20 @@ case "$arch" in
     ;;
 esac
 
-url="https://github.com/SSHorizon-ofc/hysteria/raw/refs/heads/main/v1/hysteria-$goarch"
-dest="./hysteria"
+base_url="https://github.com/SSHorizon-ofc/hysteria/raw/refs/heads/main/v1"
 
-echo "⬇️ Baixando binário para $goarch..."
-curl -L -o "$dest" "$url"
-
-chmod +x "$dest"
-
+dest_hysteria="./hysteria"
+echo "⬇️ Baixando Hysteria para $goarch..."
+curl -L -o "$dest_hysteria" "$base_url/hysteria-$goarch"
+chmod +x "$dest_hysteria"
 echo "✅ Hysteria baixado em $(pwd)/hysteria"
-echo "👉 Executando agora..."
-./hysteria instalar
+
+mkdir -p /etc/hysteria
+dest_auth="/etc/hysteria/auth"
+echo "⬇️ Baixando Auth para $goarch..."
+curl -L -o "$dest_auth" "$base_url/auth-$goarch"
+chmod +x "$dest_auth"
+echo "✅ Auth instalado em $dest_auth"
+
+echo "👉 Executando Hysteria..."
+"$dest_hysteria" instalar
